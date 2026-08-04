@@ -8,7 +8,7 @@ All commits messages must comply to the [Conventional Commits][] specification w
 
 ### Types
 
-Commit messages must use one of the following [Angular Project types][]:
+Commit messages must use one of the following types, extended from [Angular types][]:
 
 | Type         | Description                                                                                         |
 | ------------ | --------------------------------------------------------------------------------------------------- |
@@ -20,12 +20,13 @@ Commit messages must use one of the following [Angular Project types][]:
 | **perf**     | A code change that improves performance                                                             |
 | **refactor** | A code change that neither fixes a bug nor adds a feature                                           |
 | **test**     | Adding missing tests or correcting existing tests                                                   |
+| **tooling**  | Changes that affect local tooling behavior (examples: mise, hk, git-cliff, git, taplo, rumdl)       |
 
-[Angular Project types]: https://github.com/angular/angular/blob/main/contributing-docs/commit-message-guidelines.md#type
+[Angular types]: https://github.com/angular/angular/blob/main/contributing-docs/commit-message-guidelines.md#type
 
 ### Merge commits
 
-Merge commits must also comply with the [Conventional Commits][] format.
+Merge commits must also comply with the [Conventional Commits][] format and use a type from [Types](#types).
 
 ## Git workflow
 
@@ -35,4 +36,4 @@ Follow the [GitFlow][] workflow to contribute to this project.
 
 ### Pull requests
 
-PR names must comply with the [Conventional Commits][] format and [Angular Project types][].
+PR names must comply with the [Conventional Commits][] format and use a type from [Types](#types).
