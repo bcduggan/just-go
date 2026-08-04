@@ -2,7 +2,13 @@
 
 ## Commit message format
 
-All commits messages must comply to the [Conventional Commits][] specification and use one of the following [Angular Project types][]:
+All commits messages must comply to the [Conventional Commits][] specification with the following extensions.
+
+[Conventional Commits]: https://www.conventionalcommits.org
+
+### Types
+
+Commit messages must use one of the following [Angular Project types][]:
 
 | Type         | Description                                                                                         |
 | ------------ | --------------------------------------------------------------------------------------------------- |
@@ -15,5 +21,18 @@ All commits messages must comply to the [Conventional Commits][] specification a
 | **refactor** | A code change that neither fixes a bug nor adds a feature                                           |
 | **test**     | Adding missing tests or correcting existing tests                                                   |
 
-[Conventional Commits]: https://www.conventionalcommits.org
 [Angular Project types]: https://github.com/angular/angular/blob/main/contributing-docs/commit-message-guidelines.md#type
+
+### Merge commits
+
+Merge commits must also comply with the [Conventional Commits][] format.
+
+## Git workflow
+
+Follow the [GitFlow][] workflow to contribute to this project.
+
+[GitFlow]: https://nvie.com/posts/a-successful-git-branching-model/
+
+### Pull requests
+
+PR names must comply with the [Conventional Commits][] format and [Angular Project types][].
