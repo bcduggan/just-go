@@ -20,6 +20,13 @@ hooks {
         stash = "git"
         steps = linters
     }
+    ["commit-msg"] {
+        steps {
+            ["check-conventional-commits"] {
+                check = "hk util check-conventional-commit --allowed-types build,ci,docs,feat,fix,perf,refactor,revert,test,tooling {{commit_msg_file}}"
+            }
+        }
+    }
     ["fix"] {
         fix = true
         steps = linters
