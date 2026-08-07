@@ -1,0 +1,20 @@
+name: Conventional Commits
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+jobs:
+  build:
+    name: Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: webiny/action-conventional-commits@v1.4.2
+        with:
+          allowed-commit-types: "build,ci,docs,feat,fix,perf,refactor,revert,test,tooling"
