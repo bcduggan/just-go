@@ -22,7 +22,7 @@ hooks {
     }
     ["commit-msg"] {
         steps {
-            ["check-conventional-commits"] {
+            ["check-conventional-commit"] {
                 check = "hk util check-conventional-commit --allowed-types build,ci,docs,feat,fix,perf,refactor,revert,test,tooling {{commit_msg_file}}"
             }
         }
