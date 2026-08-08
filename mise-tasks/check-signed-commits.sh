@@ -1,10 +1,13 @@
 #!/bin/sh
+#MISE description="Verify git commit signatures before push."
+#USAGE arg "<remote>" help="Name of the remote to which the push is being done"
+#USAGE arg "<url>" help="URL to which the push is being done"
 
-# An example hook script to verify what is about to be pushed.  Called by "git
-# push" after it has checked the remote status, but before anything has been
-# pushed.  If this script exits with a non-zero status nothing will be pushed.
+# Called by "git push" after it has checked the remote status, but before
+# anything has been pushed. If this script exits with a non-zero status nothing
+# will be pushed.
 #
-# This hook is called with the following parameters:
+# This hook is called with the following parameters (unused in this script):
 #
 # $1 -- Name of the remote to which the push is being done
 # $2 -- URL to which the push is being done
@@ -15,12 +18,8 @@
 # the standard input in the form:
 #
 #   <local ref> <local oid> <remote ref> <remote oid>
-#
-# This sample shows how to prevent push of commits where the log message starts
-# with "WIP" (work in progress).
 
-remote="$1"
-url="$2"
+set -euf
 
 zero=$(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
 
@@ -40,11 +39,11 @@ do
 			range="$remote_oid..$local_oid"
 		fi
 
-		# Check for WIP commit
-		commit=$(git rev-list -n 1 --grep '^WIP' "$range")
-		if test -n "$commit"
+		# Check for unsigned or signed-but-unverified commits
+		commits=$(git rev-list $range | tr '\n' ' ')
+		if ! git verify-commit $commits 2>/dev/null
 		then
-			echo >&2 "Found WIP commit in $local_ref, not pushing"
+			echo >&2 "Found unsigned or signed-but-unverified commit in $local_ref, not pushing"
 			exit 1
 		fi
 	fi
