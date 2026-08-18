@@ -27,6 +27,14 @@ hooks {
             }
         }
     }
+    ["pre-push"] {
+        steps {
+            ["check-signed-commits"] {
+                check = "mise run check-signed-commits {{hook_args}}"
+                stdin = "{{hook_stdin}}"
+            }
+        }
+    }
     ["fix"] {
         fix = true
         steps = linters
