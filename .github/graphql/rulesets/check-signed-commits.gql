@@ -1,0 +1,21 @@
+mutation($sourceId: ID!) {
+  createRepositoryRuleset(input: {
+    bypassActors: [],
+    conditions: {
+      refName: {
+        exclude: [],
+        include: ["~ALL"]
+      }
+    },
+    enforcement: ACTIVE,
+    name: "Check signed commits",
+    rules: [{type: REQUIRED_SIGNATURES}],
+    sourceId: $sourceId,
+    target: BRANCH
+  }) {
+    ruleset {
+      id
+      createdAt
+    }
+  }
+}
