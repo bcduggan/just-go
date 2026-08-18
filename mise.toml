@@ -35,3 +35,12 @@ run = [
     | xargs pkl download-package
   ''',
 ]
+
+[tasks."github:create-repository-ruleset:check-signed-commits"]
+run = [
+  '''
+  {{vars.gh_graphql}} \
+    --field sourceId="$({{vars.github_repo_id_cmd}})" \
+    --field query="@{{config_root}}/.github/graphql/createRepositoryRuleset/check-signed-commits.gql"
+  ''',
+]
