@@ -1,9 +1,10 @@
 [vars]
+github_repo_id_cmd = "gh repo view --json id --jq '.id'"
 # X-Github-Next-Global-ID:1 explanation:
 # https://github.blog/developer-skills/github/exploring-github-cli-how-to-interact-with-githubs-graphql-api-endpoint/#basic-query-example
 # https://docs.github.com/en/graphql/guides/migrating-graphql-global-node-ids
 gh_graphql = "gh api graphql --header X-Github-Next-Global-ID:1"
-github_repo_id_cmd = "gh repo view --json id --jq '.id'"
+gh_graphql_repo = "{{vars.gh_graphql}} --field sourceId=$({{vars.github_repo_id_cmd}})"
 
 [tools]
 hk = "latest"
@@ -17,7 +18,7 @@ HK_MISE = 1
 postinstall = [
   # Automatically install/update hooks when tools are installed
   { run = "hk install --mise" },
-  { task = "github:create-repository-ruleset:*" },
+  { task = "github:rulesets:*" },
 ]
 
 [tasks.pkl-download-packages]
@@ -39,11 +40,11 @@ run = [
   ''',
 ]
 
-[tasks."github:create-repository-ruleset:check-signed-commits"]
-run = [
+[tasks."github:rulesets:check-signed-commits"]
+vars.gql = "@{{config_root}}/.github/graphql/rulesets/check-signed-commits.gql"
+run = '''
+  if ! RESULT=$({{vars.gh_graphql_repo}} --field query="{{vars.gql}}" 2>/dev/null); then
+    [ "$(echo $RESULT | jq '.errors|length')" -eq 1 ] || exit 1
+    echo $RESULT | jq --raw-output '.errors[].message' | grep --quiet "Name must be unique" || exit 1
+  fi
   '''
-  {{vars.gh_graphql}} \
-    --field sourceId="$({{vars.github_repo_id_cmd}})" \
-    --field query="@{{config_root}}/.github/graphql/createRepositoryRuleset/check-signed-commits.gql"
-  ''',
-]
