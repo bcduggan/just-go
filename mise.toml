@@ -14,8 +14,11 @@ jq = "latest"
 HK_MISE = 1
 
 [hooks]
-# Automatically install/update hooks when tools are installed
-postinstall = "hk install --mise"
+postinstall = [
+  # Automatically install/update hooks when tools are installed
+  { run = "hk install --mise" },
+  { task = "github:create-repository-ruleset:*" },
+]
 
 [tasks.pkl-download-packages]
 # pkl-lsp automatically downloads imports through an LSP extension that some editors, like VSCode, can use.
