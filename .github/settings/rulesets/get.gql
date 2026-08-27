@@ -1,0 +1,14 @@
+query($owner: String!, $name: String!, $first: Int!, $endCursor: String!) {
+  repository(owner: $owner, name: $name) {
+    rulesets (first: $first, after: $endCursor){
+      nodes {
+        id
+        name
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+}
