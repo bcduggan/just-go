@@ -1,5 +1,5 @@
-#!/bin/sh
-#MISE description="Verify git commit signatures before push."
+#!/usr/bin/sh
+#MISE description="Verify git commit and tag signatures before push."
 #USAGE arg "<remote>" help="Name of the remote to which the push is being done"
 #USAGE arg "<url>" help="URL to which the push is being done"
 
@@ -18,6 +18,25 @@
 # the standard input in the form:
 #
 #   <local ref> <local oid> <remote ref> <remote oid>
+#
+# git invokes the pre-push hook script for each reference it intends to push to
+# the remote. For example, git will call the pre-push hook script twice after
+# this command, once for feat/new-feature and again for v1.0.0:
+#
+# ```console
+# $ git push --atomic --upstream origin feat/new-feature v1.0.0
+# ```
+#
+# If feat/new-feature and v1.0.0 are a branch and tag, respectively, git will
+# pass each of them as $local_ref (in this script) on stdin in two separate
+# invocations.
+#
+# This script verifies signatures on tags and all commits reachable from the
+# passed reference that don't exist on the remote before pushing. It fails if
+# it can't verify any of them.
+#
+# This means that this hook script prevents pushing lightweight tags because
+# they don't support PGP signatures.
 
 set -euf
 
@@ -32,18 +51,41 @@ do
 	else
 		if test "$remote_oid" = "$zero"
 		then
-			# New branch, examine all commits
+			# New branch or tag, examine all commits
 			range="$local_oid"
 		else
-			# Update to existing branch, examine new commits
+			# Update to existing branch or tag, examine new commits
 			range="$remote_oid..$local_oid"
+		fi
+
+		# Check for unsigned or signed-but-unverified tags
+		#
+		# $local_ref is in refs format, so branches will begin with refs/heads and
+		# tags will begin with refs/tags.
+		if [ "$(echo "$local_ref" | cut -f2 -d/)" = "tags" ]
+		then
+			# A refs/tags reference is always a tag, but is either an annotated or
+			# lightweight tag. 'cat-file -t' outputs the type of git object. Annotated
+			# tags are of type "tag" and lightweight tags are of type "commit". Only
+			# annotated tags support signtatures.
+			if [ "$(git cat-file -t "$local_ref")" = "tag" ]
+			then
+				if ! git verify-tag "$local_ref" 2>/dev/null
+				then
+					echo >&2 "Found unsigned or signed-but-unverified tag $local_ref, not pushing"
+					exit 1
+				fi
+			else
+				echo "Found lightweight tag $local_ref, not pushing"
+				exit 1
+			fi
 		fi
 
 		# Check for unsigned or signed-but-unverified commits
 		commits=$(git rev-list $range | tr '\n' ' ')
 		if ! git verify-commit $commits 2>/dev/null
 		then
-			echo >&2 "Found unsigned or signed-but-unverified commit in $local_ref, not pushing"
+			echo >&2 "Found unsigned or signed-but-unverified commit $local_ref, not pushing"
 			exit 1
 		fi
 	fi

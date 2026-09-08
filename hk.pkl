@@ -29,8 +29,8 @@ hooks {
     }
     ["pre-push"] {
         steps {
-            ["check-signed-commits"] {
-                check = "mise run check-signed-commits {{hook_args}}"
+            ["verify-signatures"] {
+                check = "mise run git:hooks:pre-push:verify-signatures {{hook_args}}"
                 stdin = "{{hook_stdin}}"
             }
         }
