@@ -19,12 +19,14 @@ postinstall = [
   # Automatically install/update hooks when tools are installed
   { run = "hk install --mise" },
   { task = "github:rulesets:*" },
+  { task = "pkl-download-packages-for-all" },
 ]
 
 [tasks.pkl-download-packages]
 # pkl-lsp automatically downloads imports through an LSP extension that some editors, like VSCode, can use.
 # Some editors, like Helix, don't support that extension. However, they can use cached imports if they have been
 # manually downloaded.
+tools.jq = "latest"
 description = "Manually download packages for pkl files."
 usage = '''
   arg "<pkl-files>" help="pkl files" var=#true var_min=1
@@ -38,6 +40,17 @@ run = [
     | uniq \
     | xargs pkl download-package
   ''',
+]
+
+[tasks.pkl-download-packages-for-all]
+tools.fd = "latest"
+description = "Manually download packages for all pkl files in project directory."
+vars.all_pkl_files = '''{{exec(command="fd --glob '*.pkl' " ~ config_root)}}'''
+# Does not require open and close double quotes:
+run = [
+  { task = "pkl-download-packages", args = [
+    '''{{vars.all_pkl_files|split(pat='\n')|join(sep='" "')}}''',
+  ] },
 ]
 
 [tasks."github:rulesets:check-signed-commits"]
