@@ -1,7 +1,7 @@
 amends "package://github.com/jdx/hk/releases/download/v1.58.1/hk@1.58.1#/Config.pkl"
 import "package://github.com/jdx/hk/releases/download/v1.58.1/hk@1.58.1#/Builtins.pkl"
 
-local conventional_commit_types = "build,ci,docs,feat,fix,perf,refactor,revert,test,tooling"
+local conventional_commit_types = "build,ci,docs,feat,fix,format,perf,refactor,revert,test,tooling"
 
 local linters = new Mapping<String, Step> {
     // Add linters here. Examples:
