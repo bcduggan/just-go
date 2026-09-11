@@ -1,12 +1,12 @@
-# Just Go
+# tooling
 
-_Opinionated project workflow practices_
+_Reusable hk and mise configurations_
 
-> What are you preparing? You're always preparing! Just go!
+> What are those, hooks?
 
--- Dark Helmet
+-- Sal
 
-This project describes a set of integrated practices that authors can copy, import, or use to inspire workflows for new projects.
+Reusable hk git hooks, mise tasks, and mise config environments that enforce opinionated development practices with local tooling.
 
 ## Table of Contents
 
@@ -18,17 +18,30 @@ This project describes a set of integrated practices that authors can copy, impo
 
 ## Background
 
-Choosing how to work in new projects takes a lot of time. The author should decide how to generate new features and releases, which documentation to keep and its structure, and whether the workflow should work without an online git forge, to name a few. Each of these choices can subtly enable or disable options for the other choices. Decision overload can quickly turn into decision deadlock, which can cost the author an infinite amount of time.
+I wanted reusable, local tooling to enforce a set of development policies and practices I believe in, like...
 
-I don't want to make all of these decisions for every new project. I want to adopt a set of policies, practices, reusable configurations, and automated enforcement mechanisms that work well together, work with and without git forges, and I can operate in accordance with my values.
+- Signed commits and tags
+- Conventional commits
+- GitFlow
+- Auto-updated changelog
+
+...and possibly more.
 
 ## Usage
 
-There is nothing to install.
+One or more of:
 
-The MkDocs site describes elements of the development flow and how to use them together.
+[Import][hk configuration] an hk config file into your project's hk.pkl.
 
-This project's git history and contribution guidelines implement the development workflow.
+[Include][include mise tasks] a mise tasks directory in your mise tasks sources.
+
+[Vendor (with vendir)][vendir] a mise config environment and supporting mise tasks.
+
+[hk configuration]: https://hk.jdx.dev/configuration.html
+[include mise tasks]: https://mise.jdx.dev/tasks/task-configuration.html#task_config.includes
+[vendir]: https://carvel.dev/vendir/
+
+TODO: How?
 
 ## Author
 
