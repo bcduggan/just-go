@@ -18,7 +18,6 @@ HK_MISE = 1
 postinstall = [
   # Automatically install/update hooks when tools are installed
   { run = "hk install --mise" },
-  { task = "github:rulesets:*" },
   { task = "pkl-download-packages-for-all" },
 ]
 
@@ -52,12 +51,3 @@ run = [
     '''{{vars.all_pkl_files|split(pat='\n')|join(sep='" "')}}''',
   ] },
 ]
-
-[tasks."github:rulesets:check-signed-commits"]
-vars.gql = "@{{config_root}}/.github/graphql/rulesets/check-signed-commits.gql"
-run = '''
-  if ! RESULT=$({{vars.gh_graphql_repo}} --field query="{{vars.gql}}" 2>/dev/null); then
-    [ "$(echo $RESULT | jq '.errors|length')" -eq 1 ] || exit 1
-    echo $RESULT | jq --raw-output '.errors[].message' | grep --quiet "Name must be unique" || exit 1
-  fi
-  '''
