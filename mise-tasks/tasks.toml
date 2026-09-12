@@ -1,0 +1,30 @@
+[pkl-download-packages]
+# pkl-lsp automatically downloads imports through an LSP extension that some editors, like VSCode, can use.
+# Some editors, like Helix, don't support that extension. However, they can use cached imports if they have been
+# manually downloaded.
+tools.jq = "latest"
+description = "Manually download packages for pkl files."
+usage = '''
+  arg "<pkl-files>" help="pkl files" var=#true var_min=1
+'''
+run = [
+  '''
+  pkl analyze imports --format json "{{ usage.pkl_files|unique|join(sep='" "') }}" \
+    | jq --raw-output '.imports | keys | .[]' \
+    | grep --regexp '^package://' \
+    | cut --fields 1 --delimiter '#' \
+    | uniq \
+    | xargs pkl download-package
+  ''',
+]
+
+[pkl-download-packages-for-all]
+tools.fd = "latest"
+description = "Manually download packages for all pkl files in project directory."
+vars.all_pkl_files = '''{{exec(command="fd --glob '*.pkl' " ~ config_root)}}'''
+# Does not require open and close double quotes:
+run = [
+  { task = "pkl-download-packages", args = [
+    '''{{vars.all_pkl_files|split(pat='\n')|join(sep='" "')}}''',
+  ] },
+]
