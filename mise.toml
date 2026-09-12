@@ -1,15 +1,6 @@
-[vars]
-github_repo_id_cmd = "gh repo view --json id --jq '.id'"
-# X-Github-Next-Global-ID:1 explanation:
-# https://github.blog/developer-skills/github/exploring-github-cli-how-to-interact-with-githubs-graphql-api-endpoint/#basic-query-example
-# https://docs.github.com/en/graphql/guides/migrating-graphql-global-node-ids
-gh_graphql = "gh api graphql --header X-Github-Next-Global-ID:1"
-gh_graphql_repo = "{{vars.gh_graphql}} --field sourceId=$({{vars.github_repo_id_cmd}})"
-
 [tools]
 hk = "latest"
 pkl = "latest"
-jq = "latest"
 
 [env]
 HK_MISE = 1
